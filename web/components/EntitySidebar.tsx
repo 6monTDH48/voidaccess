@@ -287,8 +287,8 @@ export function EntitySidebar({
     if (s) {
       result = result.filter(
         (e) =>
-          e.value.toLowerCase().includes(s) ||
-          (e.category as string).toLowerCase().includes(s)
+          (e.value ?? "").toLowerCase().includes(s) ||
+          ((e.category as string) ?? "").toLowerCase().includes(s)
       );
     }
     if (freshnessFilter === "fresh") {

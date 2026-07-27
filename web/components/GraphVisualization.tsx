@@ -497,7 +497,7 @@ export function GraphVisualization({
   useEffect(() => { highlightedNodeRef.current = highlightedNode; }, [highlightedNode]);
 
   const rebuildKey = useMemo(() => {
-    if (!data) return "empty";
+    if (!data || !data.nodes || !data.edges) return "empty";
     return `${data.nodes.length}-${data.edges.length}-${strongEdgesOnly}`;
   }, [data, strongEdgesOnly]);
 
@@ -711,7 +711,7 @@ export function GraphVisualization({
   // ── Build sigma ───────────────────────────────────────────────────────────────
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || !data || data.nodes.length === 0) return;
+    if (!el || !data || !data.nodes || data.nodes.length === 0) return;
 
     // Tear down old instance
     sigmaRef.current?.kill();
@@ -1161,7 +1161,7 @@ export function GraphVisualization({
       </div>
     );
   }
-  if (loading && (!data || data.nodes.length === 0)) {
+  if (loading && (!data || !data.nodes || data.nodes.length === 0)) {
     return (
       <div className="flex h-full items-center justify-center bg-[var(--bg-void)]">
         <div className="flex flex-col items-center gap-4">

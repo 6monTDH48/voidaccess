@@ -2489,7 +2489,7 @@ async def list_investigations(
             invs = (
                 session.query(Investigation)
                 .filter(Investigation.is_seed == False)
-                .filter(Investigation.user_id == current_user.id)
+                .filter(Investigation.user_id == current_user.user.id)
                 .order_by(Investigation.created_at.desc())
                 .offset(offset)
                 .limit(limit)
@@ -2824,7 +2824,7 @@ async def get_investigation_entities(
     investigation_id: str,
     entity_type: Optional[str] = Query(default=None),
     min_confidence: float = Query(default=0.75, ge=0.0, le=1.0),
-    limit: int = Query(default=20, ge=1, le=100),
+    limit: int = Query(default=20, ge=1, le=1000),
     offset: int = Query(default=0, ge=0),
     defang: bool = Query(default=True),
     freshness_exclude: Optional[str] = Query(default=None),

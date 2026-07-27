@@ -38,7 +38,7 @@ async def list_entities(
     entity_type: Optional[str] = Query(default=None, description="Filter by entity type"),
     value_contains: Optional[str] = Query(default=None, description="Filter by value substring"),
     since: Optional[str] = Query(default=None, description="ISO datetime lower bound for created_at"),
-    limit: int = Query(default=20, ge=1, le=100),
+    limit: int = Query(default=20, ge=1, le=1000),
     offset: int = Query(default=0, ge=0),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> dict:

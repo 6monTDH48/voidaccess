@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { InvestigationCard, InvestigationListItem } from "@/components/InvestigationCard";
+import { getToken } from "@/lib/auth";
 
 interface InvestigationsResponse {
   items: InvestigationListItem[];
@@ -37,12 +38,16 @@ export default function InvestigationsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/investigations?skip=${skipVal}&limit=${LIMIT}`);
+      const token = getToken();
+      const res = await fetch(`/api/investigations?skip=${skipVal}&limit=${LIMIT}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (!res.ok) throw new Error("Failed to fetch investigations");
-      const data: InvestigationsResponse = await res.json();
-      setItems(data.items);
-      setTotal(data.total);
-      setSkip(data.skip);
+      const raw = await res.json();
+      const list = Array.isArray(raw) ? raw : (raw.items ?? []);
+      setItems(list);
+      setTotal(Array.isArray(raw) ? list.length : (raw.total ?? list.length));
+      setSkip(Array.isArray(raw) ? skipVal : (raw.skip ?? skipVal));
     } catch (e) {
       setError(e instanceof Error ? e.message : "An error occurred");
     } finally {

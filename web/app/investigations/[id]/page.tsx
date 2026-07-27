@@ -482,7 +482,25 @@ export default function InvestigationPage() {
           open={detailsOpen}
           onClose={() => setDetailsOpen(false)}
           onViewInGraph={() => setFocusNodeId(detailsEntity?.graph_node_id || null)}
-          onExportThisEntity={() => {}}
+          onExportThisEntity={() => {
+            if (!detailsEntity) return;
+            const id = detailsEntity.id;
+            void (async () => {
+              const token = getToken();
+              const res = await fetch(
+               `/api/entities/${encodeURIComponent(id)}/export?format=json`,
+                { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+              );
+              if (!res.ok) return;
+              const blob = await res.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `voidaccess_entity_${id}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+            })();
+          }}
           onBackdropClick={() => setDetailsOpen(false)}
         />
       </div>
